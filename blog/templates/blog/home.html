@@ -11,7 +11,15 @@
                 </div>
                 <h2><a class="article-title" href="{% url 'post-detail' post.id%}">{{ post.title }}</a></h2>
                 <p class="article-content">{{ post.snippet }}</p>
+
+                <div class="border-top">
+                    <a class="like-btn"  style="text-decoration:none" disabled><i class="fa-regular fa-thumbs-up"></i> {{post.likes_count}}</a>
+                    <a class="like-btn"  style="text-decoration:none; color:red" disabled><i class="fa-regular fa-thumbs-down fa-flip-horizontal"></i> {{post.dislikes_count}}</a>
+                    <a style="text-decoration:none; color:black" disabled><i class="fas fa-comments"></i>({{post.comments.all.count}})</a>
+                </div>
+                
             </div>
+            
         </article>
     {% endfor %}
 {% endblock content %}
