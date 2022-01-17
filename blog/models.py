@@ -9,6 +9,7 @@ class Post(models.Model):
     date_posted = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     likes = models.ManyToManyField(User, related_name="blog_likes")
+    dislikes = models.ManyToManyField(User, related_name="blog_dislikes")
 
     def __str__(self):
         return self.title
@@ -21,6 +22,9 @@ class Post(models.Model):
     
     def likes_count(self):
         return self.likes.count()
+    
+    def dislikes_count(self):
+        return self.dislikes.count()
 
 class Comment(models.Model):
     body = models.TextField()
@@ -28,6 +32,7 @@ class Comment(models.Model):
 
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
+    
 
     def __str__(self):
         return f"{self.author}'s comment"

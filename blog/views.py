@@ -28,7 +28,22 @@ def likeView(request, pk):
         post.likes.remove(request.user)
     else:
         post.likes.add(request.user)
+        if(request.user in post.dislikes.all()):
+            post.dislikes.remove(request.user)
+
     return redirect(Post.objects.get(pk=pk))
+
+@login_required
+def dislikeView(request, pk):
+    post = Post.objects.get(pk=pk)
+    if(request.user in post.dislikes.all()):
+        post.dislikes.remove(request.user)
+    else:
+        if(request.user in post.likes.all()):
+            post.likes.remove(request.user)
+        post.dislikes.add(request.user)
+    return redirect(Post.objects.get(pk=pk))
+
 
 
 class CommentCreateView(LoginRequiredMixin, CreateView):

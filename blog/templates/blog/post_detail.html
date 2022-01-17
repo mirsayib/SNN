@@ -12,8 +12,9 @@
             <p class="article-content">{{ object.content }}</p>
         </div>
     </article>
-    <h3><a class="article-title" href="{% url 'post-like' post.id%}">{{object.likes_count}}</a></h3>
-    <h2><a class="article-title" href="{% url 'post-detail' post.id%}">Comments:</a></h2>
+    <a class="like-btn"  style="text-decoration:none" href="{% url 'post-like' post.id%}"><i class="fa-regular fa-thumbs-up"></i> {{object.likes_count}}</a>
+    <a class="like-btn"  style="text-decoration:none; color:red" href="{% url 'post-dislike' post.id%}"><i class="fa-regular fa-thumbs-down fa-flip-horizontal"></i> {{object.dislikes_count}}</a>
+    <h3>Comments: ({{object.comments.all.count}})</h3>
     <a class = "btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'add-comment' object.id%}">Add a comment</a>
     {% for comment in object.comments.all %}
         <article class="media content-section">
