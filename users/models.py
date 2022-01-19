@@ -19,5 +19,7 @@ class Profile(models.Model):
             img.save(self.image.path)
 
 
+
+
     
     

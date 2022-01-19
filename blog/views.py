@@ -1,13 +1,17 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 from django.views.generic import (
     ListView,
     DetailView, 
-    CreateView
+    CreateView,
+    UpdateView,
+    DeleteView
 )
 from .models import Post, Comment
+from .forms import CommentUpdateForm
 
 def home(request):
     context = {
@@ -91,6 +95,68 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
+
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Post
+    fields = ['title', 'content']
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+    
+    def test_func(self):
+        post = self.get_object()
+        if(self.request.user == post.author):
+            return True 
+        else:
+            return False
+
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Post
+    success_url = '/'
+
+    def test_func(self):
+        post = self.get_object()
+        if(self.request.user == post.author):
+            return True 
+        else:
+            return False
+
+@login_required
+def deleteComment(request, pk):
+    comment = Comment.objects.get(pk=pk)
+    post = comment.post
+    if(request.user == comment.author):
+        comment.delete()
+        return redirect(post)
+    else:
+        return HttpResponse("<h1>You Can't Delete Someone Else's Comment</h1>")
+
+
+@login_required
+def editComment(request, pk):
+    comment = Comment.objects.get(pk=pk)
+    if(request.user == comment.author):
+        if(request.method == 'POST'):
+            form = CommentUpdateForm(request.POST, instance=comment)
+            if(form.is_valid()):
+                form.save()
+                messages.success(request, 'Comment Updated Successfully')
+
+                return redirect(comment.post)
+        else:
+            form = CommentUpdateForm(instance=comment)
+        
+        context = {
+            'form': form
+        }
+
+        return render(request, 'blog/edit_comment.html', context)
+    else:
+        return HttpResponse("<h1>You Can't Edit Someone Else's Comment</h1>")
+
+
+
 
 
 
