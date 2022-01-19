@@ -44,6 +44,30 @@ def dislikeView(request, pk):
         post.dislikes.add(request.user)
     return redirect(Post.objects.get(pk=pk))
 
+@login_required
+def likeViewC(request, pk):
+    comment = Comment.objects.get(pk=pk)
+    if(request.user in comment.likes.all()):
+        comment.likes.remove(request.user)
+    else:
+        comment.likes.add(request.user)
+        if(request.user in comment.dislikes.all()):
+            comment.dislikes.remove(request.user)
+
+    return redirect(comment.post)
+
+@login_required
+def dislikeViewC(request, pk):
+    comment = Comment.objects.get(pk=pk)
+    if(request.user in comment.dislikes.all()):
+        comment.dislikes.remove(request.user)
+    else:
+        comment.dislikes.add(request.user)
+        if(request.user in comment.likes.all()):
+            comment.likes.remove(request.user)
+
+    return redirect(comment.post)
+
 
 
 class CommentCreateView(LoginRequiredMixin, CreateView):

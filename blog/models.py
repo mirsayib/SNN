@@ -32,11 +32,20 @@ class Comment(models.Model):
 
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
-    
+
+    likes = models.ManyToManyField(User, related_name="comment_likes")
+    dislikes = models.ManyToManyField(User, related_name="comment_dislikes")
+
 
     def __str__(self):
         return f"{self.author}'s comment"
     
     def get_absolute_url(self):
         return reverse("post-detail", kwargs={"pk": self.post.pk})
+    
+    def likes_count(self):
+        return self.likes.count()
+    
+    def dislikes_count(self):
+        return self.dislikes.count()
     
