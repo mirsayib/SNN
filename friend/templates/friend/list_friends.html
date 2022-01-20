@@ -1,0 +1,18 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+    {% for friend in user.friendlist.friends.all %}
+        <article class="media content-section">
+            <img class="rounded-circle article-img" src="{{ friend.profile.image.url }}" >
+            <div class="media-body">
+                <a class="mr-2" href="{% url 'user_display' friend.id %}">{{ friend }}</a>
+                <div class="article-metadata">
+                    {% comment %} <small class="text-muted">{{ post.date_posted|date:"d F, Y" }}</small> {% endcomment %}
+                    <a href="#" class="btn btn-success">Message</a>
+                    <a href="{% url 'unfriend' friend.id %}" class="btn btn-danger">Remove Friend</a>
+                </div>
+            </div>
+            
+        </article>
+    {% endfor %}
+{% endblock content %}

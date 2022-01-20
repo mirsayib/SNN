@@ -41,4 +41,7 @@ def profile(request):
 
 def display_user(request, pk):
     cur_user = User.objects.get(pk=pk)
-    return render(request, 'users/user_display.html', {'c_user':cur_user})
+    if(cur_user != request.user):
+        return render(request, 'users/user_display.html', {'c_user':cur_user})
+    else:
+        return redirect('profile')

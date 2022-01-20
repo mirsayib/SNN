@@ -5,6 +5,10 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 @login_required
+def friends(request):
+    return render(request, 'friend/list_friends.html')
+
+@login_required
 def send_request(request, pk):
     receiver = User.objects.get(pk=pk)
     sender = request.user
@@ -32,6 +36,13 @@ def decline_request(request, pk):
     f_request.delete()
 
     return redirect('pending-requests')
+
+@login_required
+def unfriend(request, pk):
+    friend = User.objects.get(pk=pk)
+    request.user.friendlist.remove_friend(friend)
+
+    return redirect('list-friends')
 
 
 
