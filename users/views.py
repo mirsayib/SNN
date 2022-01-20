@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 def register(request):
     if(request.method == 'POST'):
@@ -37,3 +38,7 @@ def profile(request):
         'p_form':p_form
     }
     return render(request, 'users/profile.html', context)
+
+def display_user(request, pk):
+    cur_user = User.objects.get(pk=pk)
+    return render(request, 'users/user_display.html', {'c_user':cur_user})

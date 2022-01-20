@@ -1,0 +1,18 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+    {% for request in user.receiver.all %}
+        <article class="media content-section">
+            <img class="rounded-circle article-img" src="{{ request.sender.profile.image.url }}" >
+            <div class="media-body">
+                <a class="mr-2" href="{% url 'user_display' request.sender.id %}">{{ request.sender }}</a>
+                <div class="article-metadata">
+                    {% comment %} <small class="text-muted">{{ post.date_posted|date:"d F, Y" }}</small> {% endcomment %}
+                    <a href="{% url 'accept-request' request.id %}" class="btn btn-success">Accept</a>
+                    <a href="{% url 'decline-request' request.id %}" class="btn btn-danger">Decline</a>
+                </div>
+            </div>
+            
+        </article>
+    {% endfor %}
+{% endblock content %}

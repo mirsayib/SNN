@@ -23,6 +23,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'users.apps.UsersConfig',
+    'friend.apps.FriendConfig',
     'blog.apps.BlogConfig',
     'crispy_forms',
     'django.contrib.admin',
@@ -56,6 +57,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'friend.context_processors.requests_to_base',
             ],
         },
     },

@@ -64,6 +64,9 @@
               </div>
             {% endfor %}
           {% endif %}
+          {% if user in receivers %}
+            <div class="alert alert-secondary">You have pending friend requests <a href="{% url 'pending-requests' %}">Click to See</a></div>
+          {% endif %}
           {% block content %}{% endblock %}
         </div>
         <div class="col-md-4">

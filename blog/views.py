@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
+from friend.models import FriendList, FriendRequest
 from django.views.generic import (
     ListView,
     DetailView, 
@@ -15,7 +16,7 @@ from .forms import CommentUpdateForm
 
 def home(request):
     context = {
-        "posts": Post.objects.all()
+        "posts": Post.objects.all(),
     }
     return render(request, 'blog/home.html', context)
 

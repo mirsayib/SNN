@@ -1,0 +1,20 @@
+{% extends 'blog/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="content-section">
+        <img src="{{ c_user.profile.image.url }}"  class="rounded-circle account-img">
+        <div class="media-body">
+            <h2 class="account-heading">{{ c_user.username }}</h2>
+            <p class="text-secondary">{{ c_user.email }}</p>
+        </div>
+        {% if user.is_authenticated and not user == c_user%}
+            {% if c_user in user.friendlist.friends.all %}
+                <a href="#" class="btn btn-success">Message</a>
+                <a href="#" class="btn btn-danger">Remove Friend</a>
+            {% else %}
+                <a href="{% url 'friend-request' c_user.id %}" class="btn btn-primary">Add Friend</a>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock content %}
