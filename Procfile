@@ -1,1 +1,1 @@
-web: waitress-serve --port=8000 syblog.wsgi:application
+web: waitress-serve --port=$PORT syblog.wsgi:application
