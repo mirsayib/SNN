@@ -52,9 +52,15 @@ class FriendRequest(models.Model):
     """
         A friend request has a sender and a reciever
     """
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sender") #one user can send many requests so we use foreignkey instead of onetoone
-    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="receiver")
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sender") #should be sent instead of sender(related name) #one user can send many requests so we use foreignkey instead of onetoone
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="receiver") #should be recieved instead of receiver(rel name)
 
+
+    def sender_has_sent_to(self):
+        all_sent = self.sender.sender.all()
+        users_sent_to = [req.receiver for req in all_sent]
+
+        return users_sent_to
     
 
     

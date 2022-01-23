@@ -13,7 +13,11 @@
                 <a href="#" class="btn btn-success">Message</a>
                 <a href="{% url 'unfriend' c_user.id %}" class="btn btn-danger">Remove Friend</a>
             {% else %}
-                <a href="{% url 'friend-request' c_user.id %}" class="btn btn-primary">Add Friend</a>
+                {% if c_user in user.sender.get.sender_has_sent_to %}
+                    <a disabled class="btn btn-success">Sent</a>
+                {% else %}
+                    <a href="{% url 'friend-request' c_user.id %}" class="btn btn-primary">Add Friend</a>
+                {% endif %}
             {% endif %}
         {% endif %}
     </div>
