@@ -14,9 +14,14 @@
                 <a href="{% url 'unfriend' c_user.id %}" class="btn btn-danger">Remove Friend</a>
             {% else %}
                 {% if c_user in user.sender.get.sender_has_sent_to %}
-                    <a disabled class="btn btn-success">Sent</a>
+                    <a href="{% url 'cancel-request' c_user.id %}" class="btn btn-danger">Cancel Request</a>
                 {% else %}
-                    <a href="{% url 'friend-request' c_user.id %}" class="btn btn-primary">Add Friend</a>
+                    {% if user in c_user.sender.get.sender_has_sent_to %}
+                        <a href="{% url 'pending-requests' %}" class="btn btn-success">{{c_user}} has sent a request</a>
+                        
+                    {% else %}
+                        <a href="{% url 'friend-request' c_user.id %}" class="btn btn-primary">Add Friend</a>
+                    {% endif %}
                 {% endif %}
             {% endif %}
         {% endif %}

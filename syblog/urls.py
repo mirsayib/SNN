@@ -17,6 +17,7 @@ urlpatterns = [
     path('user/<int:pk>/request_friend/', friend_views.send_request, name="friend-request"),
     path('pending_requests/', friend_views.pending_requests, name='pending-requests'),
     path('accept_request/<int:pk>/', friend_views.accept_request, name='accept-request'),
+    path('cancel_request/<int:pk>/', friend_views.cancel_request, name='cancel-request'),
     path('decline_request/<int:pk>/', friend_views.decline_request, name='decline-request'),
     path('remove_friend/<int:pk>/', friend_views.unfriend, name='unfriend'),
     path('', include('blog.urls'))
