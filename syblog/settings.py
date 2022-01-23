@@ -96,6 +96,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+ABSOLUTE_URL_OVERRIDES = {
+    'auth.user': lambda u: f"/user/{u.id}/",
+}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/

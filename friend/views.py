@@ -16,7 +16,7 @@ def send_request(request, pk):
     f = FriendRequest(sender = sender, receiver=receiver)
     FriendRequest.save(f)
 
-    return redirect('blog-home')
+    return redirect('user_display', pk=receiver.pk)
 
 @login_required
 def pending_requests(request):
