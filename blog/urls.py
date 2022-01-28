@@ -22,4 +22,5 @@ urlpatterns = [
     path('comment/<int:pk>/like/', views.likeViewC, name='comment-like'),
     path('comment/<int:pk>/dislike/', views.dislikeViewC, name='comment-dislike'),
     path('about/', views.about, name="blog-about"),
+    path('chat/', include('chat.urls'))
 ]

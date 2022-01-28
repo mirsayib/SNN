@@ -8,7 +8,9 @@ const toggleComments = () => {
 
 var exp_comments = document.querySelector('.expand-comments')
 
-exp_comments.addEventListener('click', toggleComments)
+if(exp_comments){
+    exp_comments.addEventListener('click', toggleComments)
+}
 
 var commentSection = document.querySelector('.comment-section')
 

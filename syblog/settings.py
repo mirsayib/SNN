@@ -22,9 +22,11 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'users.apps.UsersConfig',
     'friend.apps.FriendConfig',
     'blog.apps.BlogConfig',
+    'chat.apps.ChatConfig',
     'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -65,7 +67,18 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'syblog.wsgi.application'
+# WSGI_APPLICATION = "syblog.wsgi.application"
+ASGI_APPLICATION = 'syblog.asgi.application'
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
 
 
 # Database
@@ -136,3 +149,4 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_REDIRECT_URL = 'blog-home'
 LOGIN_URL = 'login'
+
