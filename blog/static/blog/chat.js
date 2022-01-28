@@ -45,7 +45,6 @@ if (message_tab){
     }
 
     ws.onmessage = (event) => {
-        console.log('Message received from Server...', event.data);
         const data = JSON.parse(event.data)
 
         msg = document.createElement('div')
@@ -53,7 +52,7 @@ if (message_tab){
 
 
         msg.innerHTML = `<div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3 mb-3">
-									<div class="font-weight-bold mb-1">${data.sender}</div>
+									<div class="font-weight-bold mb-1">${data.sender}<small class="ml-3 text-muted">Now</small></div><hr style="margin-top: 0">
 									${data.msg}
 								</div>`
         message_tab.appendChild(msg)

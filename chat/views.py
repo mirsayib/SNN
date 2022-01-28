@@ -8,8 +8,12 @@ from .forms import CreateGroupForm
 @login_required
 def chatroom(request, group_name):
     group = Group.objects.filter(name=group_name).first()
-    messages = Message.objects.filter(group=group)
-    return render(request, 'chat/chatroom.html', {'group_name': group_name, 'chats':messages})
+    if(not group):
+        alerts.success(request, f'No Group Of Name {group_name} exists')
+        return redirect(Group.objects.filter(name='lobby').first())
+    else:
+        messages = Message.objects.filter(group=group)
+        return render(request, 'chat/chatroom.html', {'group_name': group_name, 'chats':messages})
 
 @login_required
 def chat_home(request):
