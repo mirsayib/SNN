@@ -35,20 +35,26 @@ class MySyncConsumer(SyncConsumer):
         data = json.loads(event['text'])
 
         group = Group.objects.get(name=self.group_name)
+        if(self.user.is_authenticated):
 
-        message = Message(
-            content = data['msg'],
-            group = group,
-            author = self.user,
-        ).save()
+            message = Message(
+                content = data['msg'],
+                group = group,
+                author = self.user,
+            ).save()
 
-        async_to_sync(self.channel_layer.group_send)(
-            self.group_name, 
-            {
-            'type': 'chat.message',
-            'message': event['text']
-            }
-        )
+            async_to_sync(self.channel_layer.group_send)(
+                self.group_name, 
+                {
+                'type': 'chat.message',
+                'message': event['text']
+                }
+            )
+        else:
+            self.send({
+                'type': 'websocket.send',
+                'text': json.dumps({"msg": "Login Required", "sender": "Anonymous User"})
+            })
 
     def chat_message(self, event):
         self.send({
@@ -86,6 +92,7 @@ class MyAsyncConsumer(AsyncConsumer):
         await self.channel_layer.group_add( 
             self.group_name, self.channel_name
         )
+        
         await self.send({
             'type': 'websocket.accept'
         })
@@ -99,22 +106,28 @@ class MyAsyncConsumer(AsyncConsumer):
 
         group = await database_sync_to_async(Group.objects.get)(name=self.group_name)
 
-        message = Message(
-            content = data['msg'],
-            group = group,
-            author = self.user
+        if(self.user.is_authenticated):
+            message = Message(
+                content = data['msg'],
+                group = group,
+                author = self.user
 
-        )
+            )
 
-        await database_sync_to_async(message.save)()
+            await database_sync_to_async(message.save)()
 
-        await self.channel_layer.group_send(
-            self.group_name, 
-            {
-            'type': 'chat.message',
-            'message': event['text']
-            }
-        )
+            await self.channel_layer.group_send(
+                self.group_name, 
+                {
+                'type': 'chat.message',
+                'message': event['text']
+                }
+            )
+        else:
+            await self.send({
+                'type': 'websocket.send',
+                'text': json.dumps({"msg": "Login Required", "sender": "Anonymous User"})
+            })
     
     async def chat_message(self, event):
         await self.send({

@@ -47,7 +47,7 @@
                 <a class="nav-item nav-link" href="{% url 'post-create' %}">New Post</a>
                 <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
                 <a class="nav-item nav-link" href="{% url 'list-friends' %}">Friends</a>
-                {% comment %} <a class="nav-item nav-link" href="{% url 'chatroom' %}">Chatroom</a> {% endcomment %}
+                <a class="nav-item nav-link" href="{% url 'chat-home' %}">Chatroom</a>
               {% else %}
                 <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
                 <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>

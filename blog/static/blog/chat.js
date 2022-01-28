@@ -7,14 +7,23 @@ var msgSubmit = document.getElementById("chat-message-submit")
 if (message_tab){
     message_tab.scrollTop = message_tab.scrollHeight
 
-    const groupName = JSON.parse(document.getElementById("group-name").textContent)
-    const currentUser = JSON.parse(document.getElementById("current_user").textContent)
+    var groupName = document.getElementById("group-name")
+    var currentUser = document.getElementById("current_user")
+
+    if(!groupName){
+        var group_Name = 'lobby'
+        var current_User = JSON.parse(document.getElementById("current_user_lobby").textContent)
+    }
+    else{
+        var group_Name = JSON.parse(groupName.textContent)
+        var current_User = JSON.parse(currentUser.textContent)
+    }
 
     var ws = new WebSocket(
         'ws://'
         + window.location.host
         + '/ws/ac/'
-        + groupName
+        + group_Name
         + '/'
     )
 
@@ -24,7 +33,7 @@ if (message_tab){
         if (message) {
             ws.send(JSON.stringify({
                 'msg': message,
-                'sender': currentUser
+                'sender': current_User
             }))
 
             msgInput.value = ""

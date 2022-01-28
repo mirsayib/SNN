@@ -1,12 +1,27 @@
-{% extends "blog/base.html" %}
+{% extends 'blog/base.html' %}
 
 {% block content %}
 
     <main class="content">
+        <div class="container p-0">
+            <h3>What Group Would You Like To Enter?</h3>
+            <article class="media content-section">
+            <form style="width: 100%;" action="" method='post' enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input name='group_name' id='enter-group' type="text" class="form-control" placeholder="Enter Name of a Group...">
+                    <button type="submit" id='enter-sumbit' class="btn btn-primary">Enter</button>
+                </div>
+            </form>
+            </article>
+        </div>
+        
+    </main>
+        <main class="content">
     <div class="container p-0">
-		<span style="text-align: center;">
-            <hr>        
-			<h1 class="h3 mb-3">{{group_name}}</h1>
+        <span style="text-align: center;">
+            <hr>
+            <h1 class="h3 mb-3">Lobby</h1>
             <hr><hr>
         </span>
 		<div class="card">
@@ -38,8 +53,11 @@
 			</div>
 		</div>
 	</div>
+    <small class="mb-3">messages here will be visible to everyone on this page</small>
     </main>
-    {{group_name|json_script:"group-name"}}
-	{{request.user.username|json_script:"current_user"}}
-    
+    {{request.user.username|json_script:"current_user_lobby"}}
+
+
 {% endblock content %}
+
+
