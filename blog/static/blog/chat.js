@@ -19,8 +19,9 @@ if (message_tab){
         var current_User = JSON.parse(currentUser.textContent)
     }
 
+    var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
     var ws = new WebSocket(
-        'wss://'
+        ws_scheme + '://'
         + window.location.host
         + '/ws/ac/'
         + group_Name
