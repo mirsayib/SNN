@@ -20,7 +20,7 @@ if (message_tab){
     }
 
     var ws = new WebSocket(
-        'wss://'
+        'ws://'
         + window.location.host
         + '/ws/ac/'
         + group_Name
