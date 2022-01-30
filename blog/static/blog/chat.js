@@ -20,13 +20,14 @@ if (message_tab){
     }
 
     var ws = new WebSocket(
-        'ws://'
+        'wss://'
         + window.location.host
         + '/ws/ac/'
         + group_Name
         + '/'
     )
 
+    console.log('kkk');
 
     msgSubmit.onclick = (event) => {
         const message = msgInput.value
