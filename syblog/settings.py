@@ -7,7 +7,7 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = 'g3hd00kru%j%t+4%qau0ecrdh^pyo8z!84@p!_9i-#+v2v5cc&'
 
 
 DEBUG = False
