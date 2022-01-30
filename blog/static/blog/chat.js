@@ -20,7 +20,7 @@ if (message_tab){
     }
 
     var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
-    var ws = new WebSocket(
+    var ws = new ReconnectingWebSocket(
         ws_scheme + '://'
         + window.location.host
         + '/ws/ac/'
