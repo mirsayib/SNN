@@ -8,10 +8,10 @@ import cloudinary_storage
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = 'g3hd00kru%j%t+4%qau0ecrdh^pyo8z!84@p!_9i-#+v2v5cc&'
+SECRET_KEY = os.getenv('DJ_SECRET_KEY', 'fgh747trihfw984r3ghr9834yt')
 
 
-DEBUG = True
+DEBUG = (os.environ.get('DEBUG', 'False').lower() == 'true')
 
 ALLOWED_HOSTS = ['*']
 
@@ -139,7 +139,7 @@ MEDIA_URL = '/media/'
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': 'deardsqr3',
     'API_KEY': '594936778572851',
-    'API_SECRET': 'avAg0Fzq6eYybafOK-WJbotREmQ'
+    'API_SECRET': os.getenv('CLD_SECRET', '')
 }
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
