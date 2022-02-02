@@ -61,4 +61,8 @@ def create_group(request):
     
     return render(request, 'chat/create_group.html', {'form':form})
 
+@login_required
+def dms(request):
+    return render('chat/private_chat.html')
+
     
