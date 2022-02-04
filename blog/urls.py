@@ -8,6 +8,7 @@ from .views import (
     PostUpdateView,
     PostDeleteView
 )
+
 urlpatterns = [
     path('', PostListView.as_view(), name="blog-home"),
     path('post/<int:pk>/', PostDetailView.as_view(), name="post-detail"),
@@ -22,5 +23,6 @@ urlpatterns = [
     path('comment/<int:pk>/like/', views.likeViewC, name='comment-like'),
     path('comment/<int:pk>/dislike/', views.dislikeViewC, name='comment-dislike'),
     path('about/', views.about, name="blog-about"),
+    path('api/', include('api.urls')),
     path('chat/', include('chat.urls'))
 ]

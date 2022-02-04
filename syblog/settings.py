@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'friend.apps.FriendConfig',
     'blog.apps.BlogConfig',
     'chat.apps.ChatConfig',
+    'api.apps.ApiConfig',
     'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -29,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'cloudinary_storage',
 ]
 
