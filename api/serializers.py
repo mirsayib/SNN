@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from blog.models import Post
 from django.contrib.auth.models import User
+from users.models import Profile
 
 class PostSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=100)
@@ -11,7 +12,7 @@ class PostSerializer(serializers.Serializer):
         if('69' in data.get('content')):
             raise serializers.ValidationError('Nice! But No!')
         
-        return value
+        return data
 
     def create(self, validate_data):
         su = User.objects.filter(is_superuser=True)[0]
@@ -27,7 +28,16 @@ class PostSerializer(serializers.Serializer):
 class BlogSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        # fields = ['id', 'title', 'content']
         fields='__all__'
-        #exclude = ['title]
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields='__all__'
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        exclude=['password']
+
 

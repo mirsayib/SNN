@@ -1,33 +1,67 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from blog.models import Post
-from .serializers import PostSerializer, BlogSerializer
-from rest_framework.renderers import JSONRenderer
+from users.models import Profile
+from django.contrib.auth.models import User
+from .serializers import (
+    PostSerializer,
+    BlogSerializer,
+    ProfileSerializer,
+    UserSerializer,
+)
 from rest_framework.parsers import JSONParser
 import io
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.views import APIView
 
 
-def post_summary(request, pk):
-    post = Post.objects.get(id=pk)
-    post_serializer = BlogSerializer(post)
-    json_data = JSONRenderer().render(post_serializer.data)
+class PostDetail(APIView):
+    """
+    retrieve, update or delete a snippet instance
 
-    return HttpResponse(json_data, content_type='application/json')
-    # return JsonResponse(post_serializer.data)
+    """
+    def get_object(self, pk):
+        try:
+            return Post.objects.get(pk=pk)
+        except Post.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+    def get(self, request, pk, format=None):
+        post = self.get_object(pk)
+        serializer = PostSerializer(post)
+        return Response(serializer.data)
+    
+    def put(self, request, pk, format=None):
+        stream = io.BytesIO(request.body)
+        pythondata = JSONParser().parse(stream)
 
-def post_list(request):
-    post = Post.objects.all()
-    post_serializer = BlogSerializer(post, many=True)
-    json_data = JSONRenderer().render(post_serializer.data)
+        serializer = PostSerializer(post, data=pythondata)
 
-    return HttpResponse(json_data, content_type='application/json')
+        if(serializer.is_valid()):
+            serializer.save()
+            res = {'msg': 'Post Updated'}
+            return Response(res)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, pk, format=None):
+        post.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
-    # return JsonResponse(post_serializer.data, safe=False)
 
-@csrf_exempt
-def post_create(request):
-    if(request.method == 'POST'):
+
+@api_view(['GET', 'POST'])
+def post_list(request, format=None):
+    if(request.method=='GET'):
+        post = Post.objects.all()
+        post_serializer = BlogSerializer(post, many=True)
+        return Response(post_serializer.data)
+
+
+    elif(request.method == 'POST'):
         json_data = request.body
         stream = io.BytesIO(json_data)
         pythondata = JSONParser().parse(stream)
@@ -36,47 +70,31 @@ def post_create(request):
         if(serializer.is_valid()):
             serializer.save()
             res = {'msg': 'Post Created'}
-            json_data = JSONRenderer().render(res)
-            return HttpResponse(json_data, content_type='application/json')
+            return Response(res, status=status.HTTP_201_CREATED)
         
-        json_data = JSONRenderer().render(serializer.errors)
-        return HttpResponse(json_data, content_type='application/json')
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@csrf_exempt
-def post_update(request):
-    if(request.method == 'PUT'):
-        json_data = request.body
-        stream = io.BytesIO(json_data)
-        pythondata = JSONParser().parse(stream)
-        id = pythondata.get('id')
-        post = Post.objects.get(id=id)
 
-        serializer = PostSerializer(post, data=pythondata)
+@api_view(['GET', 'POST'])
+def profile_list(request, format=None):
+    if(request.method=='GET'):
+        profile = Profile.objects.all()
+        profile_serializer = ProfileSerializer(profile, many=True)
+        return Response(profile_serializer.data)
 
-        if(serializer.is_valid()):
-            serializer.save()
-            res = {'msg': 'Post Updated'}
-            json_data = JSONRenderer().render(res)
-            return HttpResponse(json_data, content_type='application/json')
-        
-        json_data = JSONRenderer().render(serializer.errors)
-        return HttpResponse(json_data, content_type='application/json')
 
-@csrf_exempt
-def post_delete(request):
-    if(request.method == 'DELETE'):
-        json_data = request.body
-        stream = io.BytesIO(json_data)
-        pythondata = JSONParser().parse(stream)
-        id = pythondata.get('id')
-        post = Post.objects.get(id=id)
+    
 
-        post.delete()
+@api_view(['GET', 'POST'])
+def user_list(request, format=None):
+    if(request.method=='GET'):
+        user = User.objects.all()
+        user_serializer = UserSerializer(user, many=True)
+        return Response(user_serializer.data)
 
-        
-        res = {'msg': 'Post Deleted!'}
-        json_data = JSONRenderer().render(res)
-        return HttpResponse(json_data, content_type='application/json')
+
+    
+
         
         
 
