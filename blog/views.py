@@ -25,6 +25,7 @@ class PostListView(ListView):
     template_name = "blog/home.html"
     context_object_name = 'posts'
     ordering = ['-date_posted']
+    paginate_by = 3
 
 @login_required
 def likeView(request, pk):
