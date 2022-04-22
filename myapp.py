@@ -9,7 +9,7 @@ def post_data():
     }
     json_data = json.dumps(data)
 
-    URL = f"http://localhost:8000/api/posts/"
+    URL = f"http://localhost:8000/api/posts.json/"
 
     r = requests.post(url = URL, data=json_data)
     print(r.json())

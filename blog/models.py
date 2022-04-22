@@ -7,7 +7,7 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
     date_posted = models.DateTimeField(default=timezone.now)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_posts')
     likes = models.ManyToManyField(User, related_name="blog_likes")
     dislikes = models.ManyToManyField(User, related_name="blog_dislikes")
 

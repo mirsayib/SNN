@@ -3,6 +3,35 @@ from blog.models import Post
 from django.contrib.auth.models import User
 from users.models import Profile
 
+
+class BlogSerializer(serializers.ModelSerializer):
+    author = serializers.ReadOnlyField(source='author.username')
+    class Meta:
+        model = Post
+        fields=['title', 'author','content', 'date_posted']
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields='__all__'
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    user_posts = serializers.HyperlinkedRelatedField(
+        many=True,
+        view_name='post-detail',
+        read_only=True
+    )
+    class Meta:
+        model = User
+        exclude=['password']
+
+
+
+
+
+
+
+"""
 class PostSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=100)
     content = serializers.CharField()
@@ -15,7 +44,6 @@ class PostSerializer(serializers.Serializer):
         return data
 
     def create(self, validate_data):
-        su = User.objects.filter(is_superuser=True)[0]
         return Post.objects.create(author=su, **validate_data)
     
     def update(self, instance, validated_data):
@@ -25,19 +53,6 @@ class PostSerializer(serializers.Serializer):
         instance.save()
         return instance
 
-class BlogSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Post
-        fields='__all__'
-
-class ProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Profile
-        fields='__all__'
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        exclude=['password']
+"""
 
 

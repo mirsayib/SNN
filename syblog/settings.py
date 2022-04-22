@@ -34,9 +34,10 @@ INSTALLED_APPS = [
     'cloudinary_storage',
 ]
 
-if(DEBUG):
-    MIDDLEWARE = [
+
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -44,17 +45,6 @@ if(DEBUG):
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-else:
-    MIDDLEWARE = [
-        'django.middleware.security.SecurityMiddleware',
-        'whitenoise.middleware.WhiteNoiseMiddleware',
-        'django.contrib.sessions.middleware.SessionMiddleware',
-        'django.middleware.common.CommonMiddleware',
-        'django.middleware.csrf.CsrfViewMiddleware',
-        'django.contrib.auth.middleware.AuthenticationMiddleware',
-        'django.contrib.messages.middleware.MessageMiddleware',
-        'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    ]
 
 ROOT_URLCONF = 'syblog.urls'
 
@@ -89,6 +79,10 @@ CHANNEL_LAYERS = {
     },
 }
 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -145,6 +139,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'

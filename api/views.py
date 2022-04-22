@@ -1,96 +1,132 @@
-from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, Http404
 from blog.models import Post
 from users.models import Profile
 from django.contrib.auth.models import User
 from .serializers import (
-    PostSerializer,
     BlogSerializer,
     ProfileSerializer,
     UserSerializer,
 )
-from rest_framework.parsers import JSONParser
 import io
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework.reverse import reverse
+from rest_framework import status, mixins, generics, permissions
 from rest_framework.views import APIView
 
+from .permissions import IsAuthorOrReadOnly
 
-class PostDetail(APIView):
-    """
-    retrieve, update or delete a snippet instance
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'users': reverse('user-list', request=request, format=format),
+        'posts':reverse('post-list', request=request, format=format)
+    })
 
-    """
-    def get_object(self, pk):
-        try:
-            return Post.objects.get(pk=pk)
-        except Post.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        
-    def get(self, request, pk, format=None):
-        post = self.get_object(pk)
-        serializer = PostSerializer(post)
-        return Response(serializer.data)
+
+class PostDetail(mixins.RetrieveModelMixin,
+                 mixins.UpdateModelMixin,
+                 mixins.DestroyModelMixin,
+                 generics.GenericAPIView):
+
+    queryset = Post.objects.all()
+    serializer_class = BlogSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
     
-    def put(self, request, pk, format=None):
-        stream = io.BytesIO(request.body)
-        pythondata = JSONParser().parse(stream)
-
-        serializer = PostSerializer(post, data=pythondata)
-
-        if(serializer.is_valid()):
-            serializer.save()
-            res = {'msg': 'Post Updated'}
-            return Response(res)
-        
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
     
-    def delete(self, request, pk, format=None):
-        post.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
 
 
-@api_view(['GET', 'POST'])
-def post_list(request, format=None):
-    if(request.method=='GET'):
-        post = Post.objects.all()
-        post_serializer = BlogSerializer(post, many=True)
-        return Response(post_serializer.data)
+class PostList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+    queryset = Post.objects.all()
+    serializer_class = BlogSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
-    elif(request.method == 'POST'):
-        json_data = request.body
-        stream = io.BytesIO(json_data)
-        pythondata = JSONParser().parse(stream)
-        serializer = PostSerializer(data=pythondata)
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
-        if(serializer.is_valid()):
-            serializer.save()
-            res = {'msg': 'Post Created'}
-            return Response(res, status=status.HTTP_201_CREATED)
-        
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET', 'POST'])
-def profile_list(request, format=None):
-    if(request.method=='GET'):
-        profile = Profile.objects.all()
-        profile_serializer = ProfileSerializer(profile, many=True)
-        return Response(profile_serializer.data)
-
-
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
     
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
-@api_view(['GET', 'POST'])
-def user_list(request, format=None):
-    if(request.method=='GET'):
-        user = User.objects.all()
-        user_serializer = UserSerializer(user, many=True)
-        return Response(user_serializer.data)
+
+
+class ProfileList(generics.ListCreateAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+
+
+class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+
+
+
+# @api_view(['GET', 'POST'])
+# def profile_list(request, format=None):
+#     if(request.method=='GET'):
+#         profile = Profile.objects.all()
+#         profile_serializer = ProfileSerializer(profile, many=True)
+#         return Response(profile_serializer.data)
+
+
+
+
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+class UserDetail(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+
+# @api_view(['GET', 'POST'])
+# def user_list(request, format=None):
+#     if(request.method=='GET'):
+#         user = User.objects.all()
+#         user_serializer = UserSerializer(user, many=True)
+#         return Response(user_serializer.data)
+
+
+
+
+
+
+# @api_view(['GET', 'POST'])
+# def post_list(request, format=None):
+#     if(request.method=='GET'):
+#         post = Post.objects.all()
+#         post_serializer = BlogSerializer(post, many=True)
+#         return Response(post_serializer.data)
+
+
+#     elif(request.method == 'POST'):
+#         json_data = request.body
+#         stream = io.BytesIO(json_data)
+#         pythondata = JSONParser().parse(stream)
+#         serializer = PostSerializer(data=pythondata)
+
+#         if(serializer.is_valid()):
+#             serializer.save()
+#             res = {'msg': 'Post Created'}
+#             return Response(res, status=status.HTTP_201_CREATED)
+        
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 
 
     
